@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="container-fluid">
+  <div class="row content">
+
+    <div class="col-sm-3 sidenav">
+        <br>
+      <h4>Prekės paieška</h4>
+      <br>
+          <form method="post">
+            <input type="hidden" name="printerestsclass" id="printerestsclass" value="" >
+            <input type="hidden" name="prsimilarproducts" id="prsimilarproducts" value="" >
+            <div class="col-md-15 mb-3">
+              <label for="raktazodis">Įrašykite paieškos frazę:</label>
+              <input type="text" class="form-control" id="raktazodis" name="prkeywords" placeholder="pvz.: Vilniaus atributika" value="{{keywords}}">
+            </div>
+
+          <div class="form-group">
+            <label for="kategorija">Pasirinkite kategoriją:</label>
+            <select multiple class="form-control" id="kategorija" name="prcategory">
+            {% for a in listas %}
+              <option disabled>{{a}}:</option>
+            {% for e in listas[a] %}
+              <option value="{{e}}" {%if e in category%}selected{%endif%}>---{{e}}</option>
+             {% endfor %}
+             {% endfor %}
+
+            </select>
+          </div>
+
+          <div class="form-group">
+    <label for="medziaga">Produkto medziaga: </label>
+    <select multiple class="form-control" id="medziaga" name="prmaterial">
+            <option value="Medis" {%if "Medis" in material%}selected{%endif%}>Medis</option>
+            <!--<option value="Plastikas" {%if "Plastikas" in material%}selected{%endif%}>Plastikas</option>                ISIMTOS NENAUDOJAMOS MEDZIAGOS
+            <option value="Organinis stiklas" {%if "Organinis stiklas" in material%}selected{%endif%}>Organinis stiklas</option>-->
+    </select>
+</div>
+
+        <p>Kaina:</p>
+           <div class="form-row">
+    <div class="col-md-3 mb-3">
+      <input type="text" class="form-control" id="kainanuo" name="kainanuo" placeholder="nuo €" value={{pricebegins}}>
+    </div>
+    <div class="col-md-3 mb-3">
+      <input type="text" class="form-control" id="kainaiki" name="kainaiki" placeholder="iki €" value={{priceends}}>
+      </div>
+      </div>
+
+      <button id='paginationnumber' type="submit" name="page" value="1" class="btn btn-secondary">Ieškoti</button>
+        </form>
+    </div>
+
+    <div class="col-sm-9">
+<br><br><br><br>
+
+
+
+    <div class="album py-5 bg-light">
+            <div class="container">
+              <div class="row">
+                {% for e in searchresults["pages"] %}
+                <div class="col-md-4">
+                  <div class="card mb-4 box-shadow">
+                    <a href={{url_for('preke', productid=e[3]) }}>
+                        <image class="card-img-top img-responsive" src="{{url_for('static', filename='productimgs/' + e[4])}}" alt="Card image cap">
+                    </a>
+                    <div class="card-body">
+                      <a class="btn btn-link" style="color:#000000;" href={{url_for('preke', productid=e[3]) }}>{{e[0]}}</a>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-outline-success" Disabled>€ {{'%0.2f'| format(e[1]|float/100)}}</button>
+                          {% if e[2] !="0" %}
+                          <button type="button" class="btn btn-outline-danger" Disabled><strike>€ {{'%0.2f'| format(e[2]|float/100)}}</strike></button>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+<br><br>
+
+
+<style>.fullpagination .pagination>li>a,
+.fullpagination .pagination>li>span {
+  border: 1px solid green;
+}</style>
+
+<div class='fullpagination'>
+<nav aria-label="Page navigation example">
+
+{%if paginationlen>0%}
+  <ul class="pagination">
+    <li class="page-item"><button onclick='paginationpost({{page-1}})' {% if page==1 %}disabled{% endif %} class="page-link text-success"><</a></li>
+    {% if paginationlen<7 or paginationlen==7 %}
+        {% for a in range(paginationlen) %}
+            <li class="page-item"><button onclick='paginationpost({{a+1}})' {% if page==a+1 %}disabled{% endif %} class="page-link text-success {%if page==a+1%}text-dark bg-success font-weight-bold{%endif%}">{{a+1}}</a></li>
+        {% endfor %}
+    {% elif paginationlen>7 %}
+        {% if page<4 or page==4 %}
+            {% for a in range(paginationlen) %}
+                {% if (a+1) < 7 or a+1==7 %}
+                <li class="page-item"><button onclick='paginationpost({{a+1}})' {% if page==a+1 %}disabled{% endif %} class="page-link text-success {% if page==a+1 %}text-dark bg-success font-weight-bold{% endif %}">{{a+1}}</a></li>
+                {%endif%}
+            {% endfor %}
+        {% elif page>4%}
+            {% for a in range(paginationlen)[(page-1-2):(page+2)] %}<!-- loopas nuo page-2 iki page+2 -->
+                <li class="page-item"><button onclick='paginationpost({{a+1}})' {% if page==a+1 %}disabled{% endif %} class="page-link text-success {%if page==a+1%}text-dark bg-success font-weight-bold{%endif%}">{{a+1}}</a></li>
+            {% endfor %}
+        {% endif %}
+
+
+    {%endif%}
+
+    <li class="page-item"><button onclick='paginationpost({{page+1}})' {% if page==paginationlen %}disabled{% endif %} class="page-link text-success">></a></li>
+  </ul>
+ {%endif%}
+
+</nav>
+</div>
+<form method="post">
+    <input hidden id="prsimilarproducts1" value="{{similarproducts}}" >
+    <input hidden  id="printerestsclass1" value="{{interestclasses}}" >
+</form>
+
+    </div>
+  </div>
+</div>
+-->
+
+<script>
+function paginationpost(page){
+    var interest=document.getElementById('printerestsclass1').value;
+    var similar=document.getElementById('prsimilarproducts1').value
+    document.getElementById('printerestsclass').value=interest;
+    document.getElementById('prsimilarproducts').value=similar;
+    document.getElementById('paginationnumber').value=page;
+    document.getElementById('paginationnumber').click();
+}
+</script>
+{% endblock %}
+
+
+

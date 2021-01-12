@@ -1,0 +1,7 @@
+Not full list yet:
+
+pip install Pillow
+jwt
+from passlib.hash import sha256_crypt
+ZODB
+csv

@@ -1,0 +1,51 @@
+<!-- card.// Vetrsija kai konfiguruoji pagrindiniame prekes puslapyje. Isimta nes ant telefono per daug info kruvoje-->
+
+{% extends "productbase.html" %}
+{% block body %}
+<input id='productid' hidden value='{{productid}}'></input>
+
+<br>
+{% include 'product/backtocategories.html' %}
+
+
+
+<div class="card">
+	<div class="row no-gutters">
+		<aside class="col-sm">
+
+<iframe top='0px' left='0px' border='0' position='absolute' frameborder="0" width='100%' height='100%' allowfullscreen src="{{url_for('static', filename='3dscenes/' + productid+'/' + productid + '.html')}}"></iframe>	</aside>
+
+		</aside>
+
+		<aside class="col-sm">
+    <article class="p-5">
+	<h3 class="title mb-3">{{productinfo["name"]}}</h3>
+
+
+{% include 'product/buyform.html' %}
+
+
+{% include 'product/productinfo.html' %}
+
+</article> <!-- card-body.// -->
+		</aside> <!-- col.// -->
+	</div> <!-- row.// -->
+</div> <!-- card.// -->
+
+
+
+{% include 'product/suggestions.html' %}
+
+
+
+	<br>
+
+{% include 'product/javascript.js' %}
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,53 @@
+
+
+    <hr id='hr1'>
+
+<h1 id="message">Įveskite duomenis</h1>
+
+
+<div class="form-group row">
+ <label class="col-sm-2 col-form-label" for="productsNumber"><b>Kiekis:</b></label>
+      <input onchange="refreshProductNumber()" id="productsNumber" type="quantity" class="form-control col-sm-2" name="quantity" value="0">
+</div>
+
+
+<!--Paginationas pasirinkti kelinta preke konfiguruot -->
+<div class="form-group row">
+    <label id='numselectorlabel' for="selectproduct" class="col-sm-5 col-form-label">Pasirinkite prekę konfigūracijai (200):</label>
+    <select class="custom-select col-sm-2" onchange="selectProductNum()" id="selectproduct">
+          {% for n in range(200) %}
+<option id='btn{{n}}' type="button" class="btn btn-link btn-sm">{{n+1}}</button>
+{% endfor %}
+
+    </select>
+  </div>
+
+<b id='numofproduct'>1</b><b>:</b>
+ {% for a in inputinfo %}
+{% if a[2]=='text' %}
+<br><br><label for='textfor{{a[4]}}'>{{a[1]}}:</label><br>
+<input id='textfor{{a[4]}}' name='{{a[4]}}' oninput="refreshFunction('textfor{{a[4]}}','{{a[4]}}', '{{a[1]}}')"></input>
+<br>
+{% else %}
+<label for='imgfor{{a[4]}}'>{{a[1]}}:</label><br>
+<input id='imgfor{{a[4]}}' name='{{a[4]}}' type="file" onchange="setImage('imgfor{{a[4]}}', '{{a[4]}}', '{{a[1]}}', 'imgtoshow{{a[4]}}')">
+<img id='imgtoshow{{a[4]}}' style="max-width:100px;  max-height:100px;" src=''>
+{% endif %}
+{% endfor %}
+
+
+
+
+
+<div hidden>
+{% include 'svgs/'+productid+'.svg' %}
+</div>
+
+
+
+<!--komandos i verge3d siunciamos siais elementais -->
+    <button hidden type='button' id="changetextureURLfrominputvalue" >Click to change texture URL from input value</button><br><!-- aktyvuoja verge3d texture change komanda, kuri naudoja inputo zemiau turini -->
+    <button hidden type='button' id="changetexturefromappdir">Click to change texture from app dir</button><br>
+	<input hidden id='input'></input><!-- inputo turinys: svg paveikslelis su atnaujintu turiniu -->
+
+

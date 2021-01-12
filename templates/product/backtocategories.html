@@ -1,0 +1,25 @@
+<form method="post">
+    <input type="hidden" name="formmission" value="rememberproduct" >
+    {% if productid not in session.liked %}
+<button type="submit" class="btn btn-link float-right" name="add" value="{{productid}}" style="color:#000000;"><i class="far fa-heart"></i> Įsiminti</button>
+    {% endif %}
+    {% if productid in session.liked %}
+<button type="submit" class="btn btn-link float-right" name="add" value="{{productid}}" style="color:#000000;"><i class="fas fa-heart"></i></button>
+    {% endif %}
+</form>
+<form method="post" action={{url_for('paieska')}}>
+    <input type="hidden" name="prkeywords" value="" >
+    <input type="hidden" name="prmaterial" value="" >
+    <input type="hidden" name="kainanuo" value="" >
+    <input type="hidden" name="kainaiki" value="" >
+    <input type="hidden" name="page" value="1" >
+    <input type="hidden" name="printerestsclass" value="" >
+    <input type="hidden" name="prsimilarproducts" value="" >
+
+<button type="button" class="btn btn-link" disabled style="color:#000000;">Prekės kategorija:</button>
+{% for a in productinfo["categories"] %}
+{% if a|length>1 %}
+<button type="submit" class="btn btn-link" name="prcategory" value="{{a}}" style="color:#000000;">{{a}},</button>
+{%endif%}
+{%endfor%}
+</form>

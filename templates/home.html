@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+  </ol>
+  <div class="carousel-inner" role="listbox">
+    <div class="carousel-item active">
+        <a href="/apie/">
+            <img class="d-block w-100" src={{url_for ('static', filename='carousele3.jpg') }} alt="First slide">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 class="text-primary text-white"></h5>
+                <p class="text-primary text-success"><h5><b class="text-dark">Patikėkite savo vizijas siekiantiems aukščiausio rezultato !</b></h5></p>
+            </div>
+        </a>
+    </div>
+    <!--<div class="carousel-item">
+        <a href="/">
+            <img class="d-block w-100" src={{url_for ('static', filename='carousele1.jpg') }} alt="Second slide">
+            <div class="carousel-caption d-none d-md-block">
+            <h5 class="text-white">Norėdami pasiekti geriausią kokybę naudojame šiuolaikines technologijas</h5>
+            <p class="text-white">Programinio valdymo frezavimo staklės, graviravimo lazeriai</p>
+        </div>
+        </a>
+    </div>-->
+    <div class="carousel-item">
+        <a href="/katalogas/">
+            <img class="d-block w-100" src={{url_for ('static', filename='carousele2.jpg') }} alt="Third slide">
+            <div class="carousel-caption d-none d-md-block">
+            <h5 class="text-white">Paruošti dizainai jums!</h5>
+            <p class="text-white">Nesukite sau galvos ir pasirinkite mūsų sukurtus dizainus, kuriuos galite individualizuoti pagal savo poreikius !</p>
+            </div>
+        </a>
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
+
+<div class="alert alert-dark" role="alert">
+
+  <h3 class="text-center">Trys priežastys pasirinkti mus:</h3>
+  <br><br>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+<p class="text-center"><i class="fas fa-cogs fa-4x"></i></p>
+  <p class="text-center text-muted"><font size="2">Automatizuoti procesai padės jums paprasčiau ir greičiau atlikti užsakymą!</font></p>
+    </div>
+    <div class="col-sm-4">
+ <p class="text-center"><i class="fas fa-hand-holding-usd fa-4x"></i></p>
+  <p class="text-center text-muted"><font size="2">Siūlome aukščiausią kokybę už prieinamą kainą, personalizuoti gaminiai už įprastų kainą!</font></p>
+    </div>
+    <div class="col-sm-4">
+  <p class="text-center"><i class="fas fa-portrait fa-4x"></i></p>
+  <p class="text-center text-muted"><font size="2">Mūsų personalizuoti pasiūlymai suteiks Jūsų užsakomoms prekėms išskirtinį vaizdą ir vertę!</font></p>
+    </div>
+  </div>
+</div><br><br>
+
+<!-- PAPILDOMA EILUTE SU LOGO
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+    <p class="text-center"><i class="fas fa-cogs fa-4x"></i></p>
+  <p class="text-center text-muted"><font size="2">Ahdfg dfg dfgereromagsdfg fdgdfgfdgductive we sdf sdfswerggfffgsdfssdfsdf!</font></p>
+    </div>
+    <div class="col-sm-4">
+    <p class="text-center"><i class="fas fa-thumbs-up fa-4x"></i></p>
+  <p class="text-center text-muted"><font size="2">sgd gsdfgfdgdfgerert we=axdasddfdsfgfd dfgdfglgfd dfgewwetjuhjhgfhfghfghgf!</font></p>
+    </div>
+    <div class="col-sm-4">
+    <p class="text-center"><i class="fas fa-portrait fa-4x"></i></p>
+  <p class="text-center text-muted"><font size="2">Personalised production has never been so easy and fast to order!</font></p>
+    </div>
+  </div>
+</div><br><br>
+-->
+
+
+
+
+</div>
+<br>
+{% for a in suggestion %}
+<hr color="red" size="100"  width="80%"/>
+<form id="gotosearch" method="post" action={{url_for('paieska')}}>
+    <input type="hidden" name="prkeywords" value="{%if suggestion[a][4]=='prkeywords'%}{{a}}{%endif%}" >
+    <input type="hidden" name="prsimilarproducts" value="{%if suggestion[a][4]=='prsimilarproducts'%}{{a}}{%endif%}" >
+    <input type="hidden" name="prmaterial" value="{%if suggestion[a][4]=='prmaterial'%}{{a}}{%endif%}" >
+    <input type="hidden" name="kainanuo" value="{%if suggestion[a][4]=='kainanuo'%}{{a}}{%endif%}" >
+    <input type="hidden" name="kainaiki" value="{%if suggestion[a][4]=='kainaiki'%}{{a}}{%endif%}" >
+    <input type="hidden" name="prcategory" value="{%if suggestion[a][4]=='prcategory'%}{{a}}{%endif%}" >
+    <input type="hidden" name="page" value="1" >
+    <input type="hidden" name="printerestsclass" value="{%if suggestion[a][4]=='printerestsclass'%}{{a}}{%endif%}" >
+    <div class="text-center">
+    <button class="btn btn-link text-dark btn-lg" type="submit"><b>{{suggestion[a][3]}}<i class="fas fa-angle-right"></i></b></button>
+    </div>
+</form>
+            <div class="row">
+                {% for e in suggestion[a][0:3]%}
+                <div class="col-md-4">
+                  <div class="card mb-4 box-shadow" alt="Max-height 30%">
+                    <a href={{url_for('preke', productid=e[3]) }}>
+                        <image class="card-img-top" alt="Max-height 30%" src="{{url_for('static', filename='productimgs/' + e[4])}}" alt="Card image cap">
+                    </a>
+                    <div class="card-body">
+                      <a class="btn btn-link" style="color:#000000;" href={{url_for('preke', productid=e[3]) }}>{{e[0]}}</a>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-outline-success" Disabled>€ {{'%0.2f'| format(e[1]|float/100)}}</button>
+                          {% if e[2] !="0" %}
+                          <button type="button" class="btn btn-outline-danger" Disabled><strike>€ {{'%0.2f'| format(e[2]|float/100)}}</strike></button>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+
+
+{% endblock %}

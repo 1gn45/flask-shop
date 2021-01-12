@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% block body %}
+<head>
+    <style>
+    #agree{
+    outline: 1px solid 	#000000;
+    }
+
+    .param {
+    margin-bottom: 7px;
+    line-height: 1.4;
+}
+.param-inline dt {
+    display: inline-block;
+}
+.param dt {
+    margin: 0;
+    margin-right: 7px;
+    font-weight: 600;
+}
+.param-inline dd {
+    vertical-align: baseline;
+    display: inline-block;
+}
+
+.param dd {
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.shopping-cart-wrap .price {
+    color: #007bff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 5px;
+    display: block;
+}
+var {
+    font-style: normal;
+}
+
+.media img {
+    margin-right: 1rem;
+}
+.img-sm {
+    width: 90px;
+    max-height: 75px;
+    object-fit: cover;
+}
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
+
+
+
+
+
+<br><br>
+<p><b>{% if buyerdata['buyer type']=='fizinis' %}Pirkėjas{% elif buyerdata['buyer type']=='juridinis' %} Kontaktinis asmuo {% endif %}:</b> {{buyerdata['name']}}</p>
+
+{% if buyerdata['buyer type']=='juridinis' %}
+<p><b>Įmonė:</b> {{buyerdata['organization name']}}</p>
+<p><b>Įmonės kodas:</b> {{buyerdata['organization id']}}</p>
+<p><b>Įmonės pvm kodas:</b> {{buyerdata['pvm id']}}</p>
+<p><b>Įmonės registracijos adresas:</b> {{buyerdata['organization address']}}</p>
+{% endif %}
+<br>
+<h5><b>Kontaktinė informacija</b></h5>
+<p><b>email:</b> {{buyerdata['email']}}</p>
+<p><b>phone number:</b> {{buyerdata['phone']}}</p>
+<p><b>Pasirinktas siuntimo budas:</b> {{buyerdata['delivery type']}}</p>
+{% if buyerdata['delivery type']=='LPregistered' %}
+<p><b>Miestas/Gyvenvietė: </b> {{buyerdata['city']}}</p>
+<p><b>Pašto kodas: </b> {{buyerdata['zip code']}}</p>
+{% endif %}
+{% if buyerdata['delivery type']=='Omniva' %}
+<p><b>Omniva paštomato adresas: </b> {{buyerdata['omniva address']}}</p>
+{% elif  buyerdata['delivery type']=='LPregistered' %}
+<p><b>adresas: </b> {{buyerdata['address']}}</p>
+{% endif %}
+
+<br>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Prekė</th>
+      <th scope="col">Vieneto kaina</th>
+      <th scope="col">Kiekis</th>
+      <th scope="col">Iš viso</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% set sum=0 %}
+    {% for a in cartdata %}
+    <tr>
+      <th scope="row">{{ loop.index0+1 }}</th>
+      <td>{{a['productname']}}</td>
+      <td>{{'%0.2f'| format(a['price']|float/100)}} {% if a['discount']!=0 %}   <strike class="text-danger">{{'%0.2f'| format(a['discount']|float/100)}}</strike> {% endif %}</td>
+      <td>{{a['productnumber']}}</td>
+      <td>{{'%0.2f'| format(a['price']*a['productnumber']|float/100)}}  {% if a['discount']!=0 %}   <strike class="text-danger">{{'%0.2f'| format(a['discount']*a['productnumber']|float/100)}}</strike> {% endif %}</td>
+    </tr>
+    {% endfor %}
+
+    <tr>
+      <th scope="row"></th>
+      <td></td>
+      <td></td>
+      <td><b>Siuntimo kaina ({{buyerdata['delivery type']}}):</b></td>
+      {% if buyerdata['delivery type']=='LPregistered' %}
+      <td>{{'%0.2f'| format(deliveryprices['ltu']['LPregistered']|float/100)}}</td>
+      {% elif buyerdata['delivery type']=='Omniva' %}
+      <td>{{'%0.2f'| format(deliveryprices['ltu']['Omniva']|float/100)}}</td>
+      {% endif %}
+    </tr>
+
+    <tr>
+      <th scope="row"></th>
+      <td></td>
+      <td></td>
+      <td><b>Suma:</b></td>
+      <td><b>{{'%0.2f'| format(cartprice|float/100)}}</b></td>
+    </tr>
+
+
+  </tbody>
+</table>
+<p>Prekės atsiuntimas iki (apmokėjus šią dieną): {{planeddelivery}}</p>
+<input hidden id='fullprice' value='{{'%0.2f'| format(cartprice|float/100)}}'></input>
+
+<!--
+  <div>
+    <h2>Buy for $5.00</h2>
+    <button type="button" class="btn btn-primary" id="custom-button">Pay with Card</button>
+  </div>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+  <script>
+    var handler = StripeCheckout.configure({
+  key: "{{ pubkey }}",
+  image: "https://stripe.com/img/documentation/checkout/marketplace.png",
+  locale: "auto",
+  token: function(token) {
+    fetch("/charge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify({
+        token: token.id,
+        amount: {{cartprice}},
+        description: "A Flask Charge",
+      }),
+    })
+    .then(function(response) {
+      console.log(response);
+      return response.json();
+    })
+    .then(function(jsonResponse) {
+      console.log(JSON.stringify(jsonResponse));
+    });
+  }
+});
+
+    document.getElementById("custom-button").addEventListener("click", function(e) {
+      // Open Checkout with further options:
+      handler.open({
+        name: "TestDriven.io",
+        description: "A Flask Charge",
+        amount: {{cartprice}}
+      });
+      e.preventDefault();
+    });
+
+    // Close Checkout on page navigation:
+    window.addEventListener("popstate", function() {
+      handler.close();
+    });
+  </script>
+
+
+
+
+
+<div>
+    <h2>Apmokėti banko kortele ({{'%0.2f'| format(cartprice|float/100)}} eu)</h2>
+    <form action="/charge" method="post">
+    <input hidden name='amount' value='{{cartprice}}'></input>
+      <script
+        src="https://checkout.stripe.com/checkout.js"
+        class="stripe-button"
+        data-key="{{ pubkey }}"
+        data-description="{{pagetitle}}"
+        data-amount='{{cartprice}}'
+        data-locale="auto">
+      </script>
+    </form>
+  </div>
+
+-->
+<h4>Apmokėjimo metodai:</h4>
+<p><b>- Šiuo metu priimame tik apmokėjimą bankiniu pavedimu, atsiprašome už sukeltus nepatogumus.</b></p>
+<br>
+
+   <form action="/banktransaction" method="post">
+      <input hidden name='storagedict' id='storagedict'></input>
+      <input hidden name='buyerdata' id='buyerdata' value='{{buyerdatadumped}}'></input>
+      <input hidden name='cartprice' id='cartprice' value='{{cartprice}}'></input>
+    <button hidden id='getpreinvoice2'>Bank transaction</button>
+    </form>
+
+    <p id='termscondicionstext' class='text-body' style='font-size:13px'>Kad galėtume įvykdyti užsakymą, turite sutikti su <a target="_blank" href='/taisykles'>{{webdata['shopname']}}</a> taisyklėmis ir privatumo politika.</p>
+
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" value="" id="agree">
+  <label class="form-check-label" for="agree">
+    Patvirtinu, kad susipažinau ir sutinku su <a target="_blank" href='/taisykles'>{{webdata['shopname']}}</a> taisyklėmis ir privatumo politika.
+  </label>
+</div>
+
+
+    <br>
+    <button id='getpreinvoice1' onclick='proceedCheckOut()' class="btn btn-outline-primary">Gauti sąskaitą ir apmokėjimo duomenis</button>
+    <br>
+    <p id='loadingtext' hidden><i class="fas fa-cog fa-spin"></i>Prašome palaukti, priimamas užsakymas<i class="fas fa-cog fa-spin"></i></p>
+
+
+<script>
+cartcontent=localStorage.getItem("cart");
+document.getElementById('storagedict').value=cartcontent;
+
+function proceedCheckOut(){
+    if(document.getElementById('agree').checked==false)
+    {document.getElementById('termscondicionstext').className='text-danger font-weight-bold'
+    }
+    else{document.getElementById('getpreinvoice1').disabled = true;
+        document.getElementById('loadingtext').hidden = false;
+        document.getElementById('getpreinvoice2').click()};
+};
+
+</script>
+
+<!--
+   <form action="/paidwithpaypal/" method="post" id='paidwithpaypal'>
+      <input hidden name='storagedict' id='storagedict'></input>
+      <input hidden name='buyerdata' id='buyerdata' value='{{buyerdatadumped}}'></input>
+      <input hidden name='cartprice' id='cartprice' value='{{cartprice}}'></input>
+      <input hidden name='paypalorderid' id='paypalorderid' value='None'></input>
+    </form>
+
+
+
+
+    <div id="paypal-button-container"></div>
+
+
+<script src="https://www.paypal.com/sdk/js?client-id=AXbZ3dewqwBiITF_mJIQMXOK5TzVYehZM0_D79eFiGIu9J-KULpOURp5ORuSCgrGlhvRVo09bA7riVbY&currency=EUR"></script>
+
+ ///   <script>
+
+        var fullprice=parseFloat(document.getElementById('fullprice').value);
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: fullprice
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+          // Show a success message to your buyer
+             document.getElementById('paypalorderid').value=JSON.stringify(data);
+             document.getElementById("paidwithpaypal").submit();
+            });
+            }
+           }).render('#paypal-button-container');
+
+
+
+
+
+
+
+
+
+
+    </script>
+-->
+
+
+
+<br>
+
+{% endblock %}

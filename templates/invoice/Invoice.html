@@ -1,0 +1,283 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>www.kaziukas24.lt sąskaita</title>
+
+    <style>
+
+     .invoice-box {
+        max-width: 800px;
+        margin: auto;
+        padding: 30px;
+        border: 1px solid #eee;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+        font-size: 12px;
+        line-height: 20px;
+        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        color: #555;
+    }
+
+    .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+    }
+
+    .invoice-box table td {
+        padding: 5px;
+        vertical-align: top;
+    }
+
+    .invoice-box table tr td:nth-child(2) {
+        text-align: left;
+    }
+
+    .invoice-box table tr.top table td {
+        padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.top table td.title {
+        font-size: 45px;
+        line-height: 45px;
+        color: #333;
+    }
+
+    .invoice-box table tr.information table td {
+        padding-bottom: 40px;
+    }
+
+    .invoice-box table tr.heading td {
+        background: #eee;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+        padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.item td{
+        border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+        border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:nth-child(2) {
+        border-top: 2px solid #eee;
+        font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+
+        .invoice-box table tr.information table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+    }
+
+
+    .rtl {
+        direction: rtl;
+        font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    }
+
+    .rtl table {
+        text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+        text-align: left;
+    }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="{{url_for('static', filename='logo.png')}}" style="width:100%; max-width:300px;">
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+
+
+                <td colspan="2">
+                    <table>
+                        <center><h3>{{invoicetext}}<br>{{invoicetext1}}<br>{{date}}</h3></center></tr>
+                        <tr>
+                            <td>
+                                <b>Pardavėjas:</b><br>
+                                {{seller['name']}}<br>
+                                {% if invoicetext=='Sąskaita faktūra' %}
+                                Pardavėjo kodas: {{ seller['sellercode'] }}<br>
+                                Adresas: {{ seller['address']}}<br>
+                                Banko sąskaita: {{ seller['bankacc'] }}<br>
+                                {% endif %}
+                                Individualios veiklos kodas: {{seller['indveikloskodas']}}<br>
+                                Tel.: {{seller['sellerphone']}}<br>
+                                E. paštas: {{seller['selleremail']}}<br>
+
+                            </td>
+
+                            <td>
+                                <b>Pirkėjas:</b><br>
+                                {% if buyerdata['buyer type']=='fizinis' %}
+
+                                Vardas: {{buyerdata['name']}}<br>
+                                El. paštas: {{buyerdata['email']}}<br>
+                                Tel.: {{buyerdata['phone']}}<br>
+                                Pasirinktas siuntimo metodas: {{buyerdata['delivery type']}}<br>
+                                Pristatymo adresas.: {% if buyerdata['delivery type']=='Omniva' %}{{buyerdata['omniva address']}} {%else%}{{buyerdata['address']}}{% endif %}<br>
+
+                                {% elif buyerdata['buyer type']=='juridinis' %}
+
+                                Įmonė: {{buyerdata['organization name']}}<br>
+                                Įmonės kodas: {{buyerdata['organization id']}}<br>
+                                Įmonės pvm kodas: {{buyerdata['pvm id']}}<br>
+                                Įmonės registruotas adresas:<br>{{buyerdata['organization address']}}<br>
+                                El. paštas: {{buyerdata['email']}}<br>
+                                Tel.: {{buyerdata['phone']}}<br>
+                                Pasirinktas siuntimo metodas: {{buyerdata['delivery type']}}<br>
+                                Pristatymo adresas.: <br>{% if buyerdata['delivery type']=='Omniva' %}{{buyerdata['omniva address']}} {%else%}{{buyerdata['address']}}{% endif %}
+
+
+                                {% endif %}
+
+
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+
+
+
+            <tr class="heading">
+                <td>
+                    Prekė/Paslauga
+                </td>
+                <td>
+                    Vieneto kaina (eu)
+                </td>
+                <td>
+                    Kiekis
+                </td>
+                <td>
+                    Suma (eu)
+                </td>
+            </tr>
+
+
+            {% for product in cartdata['cartlist'] %}
+            <tr class="item">
+                <td>
+                    {{product['name']}} (id: {{product['id']}})
+                </td>
+                <td>
+                    {{'%0.2f'| format(product['price']|float/100)}} eu
+                </td>
+                <td>
+                    {{product['number']}} vnt.
+                </td>
+
+                <td>
+                    {{'%0.2f'|format(product['fullprice']|float/100) }} eu
+                </td>
+            </tr>
+            {% endfor %}
+
+            <tr class="item last">
+                <td>Siuntimas({{cartdata['deliverytype']}})</td>
+                <td></td><td></td>
+
+                <td>
+                    {{'%0.2f'|format(cartdata['deliveryprice']|float/100) }} eu
+                </td>
+            </tr>
+
+            <tr class="total">
+                <td></td><td></td><td></td>
+
+                <td>
+                   <b>Viso: {{'%0.2f'|format(cartdata['cartprice']|float/100) }} eu</b>
+                </td>
+            </tr>
+
+
+
+
+            <tr class="item"><td></td></tr>
+            <tr class="item"><td></td></tr>
+
+{%if invoicetext!='Sąskaita faktūra'%}
+            <tr class="item">
+                <td></td><td></td>
+
+
+                <td>
+                    Gavėjo pavadinimas:
+                </td>
+                <td>
+                    {{seller['name']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td></td><td></td>
+                <td>
+                    Sąskaita pervedimui:
+                </td>
+                <td>
+                    {{seller['bankacc']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td></td><td></td>
+                <td>
+                    Gavėjo kodas:
+                </td>
+                <td>
+                    {{seller['sellercode']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td></td><td></td>
+                <td>
+                    Mokėjimo paskirtis:
+                </td>
+                <td>
+                    Užsakymas {{cartdata['orderid']}}
+                </td>
+            </tr>
+            {%endif%}
+
+
+
+
+
+
+        </table>
+    </div>
+</body>
+</html>

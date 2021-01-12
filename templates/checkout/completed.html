@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block body %}
+<head>
+    <style>
+    .param {
+    margin-bottom: 7px;
+    line-height: 1.4;
+}
+.param-inline dt {
+    display: inline-block;
+}
+.param dt {
+    margin: 0;
+    margin-right: 7px;
+    font-weight: 600;
+}
+.param-inline dd {
+    vertical-align: baseline;
+    display: inline-block;
+}
+
+.param dd {
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.shopping-cart-wrap .price {
+    color: #007bff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 5px;
+    display: block;
+}
+var {
+    font-style: normal;
+}
+
+.media img {
+    margin-right: 1rem;
+}
+.img-sm {
+    width: 90px;
+    max-height: 75px;
+    object-fit: cover;
+}
+    </style>
+</head>
+
+
+
+
+{% if paytype=='payed' %}
+
+<h4> Apmokėjimas atliktas sėkmingai </h4>
+
+{% elif paytype=='invoice' %}
+
+<form action='/saskaita' method="post"><h4> Apmokėjimo sąskaitą galite peržiūrėti ir atsisiūsti paspaudę <button class="btn btn-link"><h4>čia</h4></button><input hidden name='pdf' value='{{pdf}}'></input>.<br>Ją taipogi gausite nurodytu el. paštu kelių minučių bėgyje</h4></form>
+{% endif %}
+
+<br><hr>
+{% include 'invoice/Invoice.html' %}
+<hr><br>
+
+
+<br>
+<input id='orderstatus' hidden value='{{orderstatus}}'>
+<script>
+if (document.getElementById('orderstatus').value=='completed')
+        {
+        localStorage.setItem("cart", JSON.stringify([]));
+        document.cookie ="productsidincart=[]; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/krepselis/";
+        }
+</script>
+
+{% endblock %}

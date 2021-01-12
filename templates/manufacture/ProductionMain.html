@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{pagetitle}}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js"></script>
+<style>
+
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+
+  .carousel-inner img {
+      width: 100%; /* Set width to 100% */
+      margin: auto;
+      min-height:200px;
+  }
+
+  /* Hide the carousel text when the screen is less than 600 pixels wide */
+  @media (max-width: 600px) {
+    .carousel-caption {
+      display: none;
+    }
+  }
+  </style>
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+        <div class = "alert alert-warning alert-dismissable" role = "alert">
+            <button type = "button" class = "close" data-dismiss = "alert" aria-label="Close"><span aria-hidden = "true">&times;</span></button>
+            {{ message }}
+        </div>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+
+
+
+
+<h1>Add order to manufacture list</h1>
+<form method='post' action="/addorder/">
+<input hidden name='action' id='createsekectedsvg' value='addorder'></input>
+
+<div class="form-group col-md-6">
+      <label for="inputname">order id: </label>
+      <input type="text" class="form-control" name='ordertoaddid' id="ordertoaddid" placeholder="id">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputEmail">money payed (cents):</label>
+      <input type="text" class="form-control" id="payedmoney" name="payedmoney" placeholder="sum">
+    </div>
+
+    <button type='submit' class="btn btn-success btn-lg active" aria-pressed="true">Add order</button>
+</form>
+<br><br>
+
+
+
+
+
+
+
+<h1>Swedbank messages</h1>
+<form method='post' action="/production/">
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">SMS content</th>
+      <th scope="col">Suggested order</th>
+      <th scope="col">status</th>
+      <th scope="col">add/remove</th>
+    </tr>
+  </thead>
+  <tbody>
+      <select multiple class="form-control" id="kategorija" name="prcategory">
+    {% for a in swedbankMessages %}
+    {% if  a[2]=='Not confirmed' %}
+    <tr>
+      <th scope="row">{{a[0]}}</th>
+      <td>{{a[1]}}</td>
+      <td>{{a[2]}} {{loop.index}}</td>
+      <td scope="col"><option value="SMS{{loop.index-1}}">"SMS{{loop.index-1}}"</option> <input id="SMS{{loop.index-1}}" name="SMS{{loop.index-1}}" class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="..."> </td>
+    </tr>
+    {%endif%}
+    {% endfor %}
+    </select>
+  </tbody>
+</table>
+
+
+<input hidden name='POSTorderlist' id='POSTorderlistt' value='none'></input>
+<input hidden name='action' id='manageSMS' value='ManageSMS'></input>
+<button id='ManageSMS' disabled class="btn btn-success btn-lg active" aria-pressed="true">Manage selected SMS</button>
+<br><p id='selectionlist'></p>
+</form>
+<br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Order maneger</h1>
+<form method='post' action="/production/">
+{% if orderstoshow=='only on process' %}<button name='action' value='showall' class="btn btn-link"  aria-pressed="true">Show all history orders</button>
+{% elif orderstoshow=='all' %}<button name='action' value='onlyproccessed' class="btn btn-link"  aria-pressed="true">Show only orders that are on proccess</button>
+{%endif%}
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Order num</th>
+      <th scope="col">Order date</th>
+      <th scope="col">status</th>
+      <th scope="col">amount</th>
+      <th scope="col">Buyer</th>
+      <th scope="col">Buyer type</th>
+      <th scope="col">Select (for svg's generation)</th>
+      <th scope="col">Order page</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in orderlist %}
+    <tr id='{{a['order number']}}' {%if orderstoshow=='only on process' %}{%if a['order status']=='finished'%}hidden{%endif%}{%endif%}
+    {%if a['order status']=='payed'%}class="table-primary"
+    {% elif  a['order status']=='remake'%}class="table-primary"
+    {% elif  a['order status']=='recieved'%}class="table-success"
+    {% elif  a['order status']=='ready for manufacture'%}class="table-warning"
+    {% elif  a['order status']=='manufacturing'%}class="table-warning"
+    {% elif  a['order status']=="SVG's generated"%}class="table-warning"
+    {% elif  a['order status']=='ready to send'%}class="table-default"
+    {% elif  a['order status']=='shipped'%}class="table-secondary"
+    {% elif  a['order status']=='cancelled'%}class="table-danger"
+    {% elif  a['order status']=='complaining'%}class="table-danger"
+    {% endif %}
+
+    >
+      <th scope="row">{{a['order number']}}</th>
+      <td>{{a['order date']}}</td>
+      <td>{{a['order status']}}</td>
+      <td>{{a['amount(cents)']}}</td>
+      <td>{{a['name']}}</td>
+      <td>{{a['buyer type']}}</td>
+      <td scope="col"><input {%if a['order status']!="payed"%}disabled{% endif %} onchange='refreshSelectionList("{{a['order number']|string}}")' id="{{a['order number']|string+'selected'}}" class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="..."></td>
+      <td><a class={%if a['invoice id']|length>1%}"btn btn-success"{%else%}"btn btn-danger"{%endif%} href="/production/invoice/{{a['order number']}}" role="button">{%if a['invoice id']|length>1%}Invoice was sent{%else%}Send invoice!{%endif%}</a>
+          <a class="btn btn-primary" href="/production/order/{{a['order number']}}/fast" role="button">view in imgs</a>
+      <a class="btn btn-primary" href="/production/order/{{a['order number']}}/slow" role="button">view original svgs</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form method='post' action="/production/">
+<input hidden name='POSTorderlist' id='POSTorderlist' value='none'></input>
+<input hidden name='action' id='createsekectedsvg' value='CreateSvg'></input>
+<button id='GenerateSvgButton' disabled class="btn btn-success btn-lg active" aria-pressed="true">Generate svg's</button>
+<br><p id='selectionlist'></p>
+</form>
+
+
+<footer class="container-fluid text-center">
+  <br><br>
+
+
+
+<hr color="red" width="80%"/>
+<h7>&copy All right Reversed. <a href="https://www.ignasmakes.com">ignasmakes</a></h7>
+
+</footer>
+
+
+
+<script>
+
+
+
+    var SelectionList = []
+
+    function refreshSelectionList(selectedID){
+        checkboxElementId=selectedID+'selected'
+        if(document.getElementById(checkboxElementId).checked){
+        SelectionList.push(selectedID)}
+        else{
+            var index = SelectionList.indexOf(selectedID);
+            if (index !== -1){SelectionList.splice(index, 1)}}
+
+        if(SelectionList.length>0){document.getElementById('GenerateSvgButton').disabled=false}
+        else{document.getElementById('GenerateSvgButton').disabled=true}
+
+        document.getElementById('selectionlist').innerHTML='Pasirinkta: '+SelectionList
+        document.getElementById('POSTorderlist').value=JSON.stringify(SelectionList)}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block body %}
+
+
+
+
+
+<div class="alert alert-dark" role="alert">
+
+  <h3 class="text-center">Prekių katalogas</h3>
+  <br><br>
+<div class="container">
+  <div class="row">
+      {% for a in listas %}
+    <div class="col-sm-4">
+<h5 class="text-center">{{a}}:</h5>
+{% for e in listas[a] %}
+
+
+  <p class="text-center text-muted">
+
+
+
+
+      <form id="{{e}}gotosearch" method="post" action={{url_for('paieska')}}>
+    <input type="hidden" name="prkeywords" value="" >
+    <input type="hidden" name="prsimilarproducts" value="" >
+    <input type="hidden" name="prmaterial" value="" >
+    <input type="hidden" name="kainanuo" value="" >
+    <input type="hidden" name="kainaiki" value="" >
+    <input type="hidden" name="prcategory" value="{{e}}" >
+    <input type="hidden" name="page" value="1" >
+    <input type="hidden" name="printerestsclass" value="" >
+    <div class="text-center">
+    <button class="btn btn-link text-dark btn-lg" type="submit"><font size="3">{{e}}</font></button>
+    </div>
+</form>
+
+
+
+  </p>
+  {% endfor %}<br><br>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+
+
+</div>
+
+{% endblock %}
+
+

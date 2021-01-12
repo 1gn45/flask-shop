@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+
+
+
+<br>
+<h3 class="text-center">Kontaktai</h3>
+<p class="text-center">Mob. tel.: {{webdata['phone']}}<br>
+Email.: {{webdata['email']}}
+{% for a in webdata['contacts'] %}
+<br><a class="text-success" target="_blank" href="{{webdata['contacts'][a]}}">{{a}}</a>
+{% endfor %}
+</p>
+
+
+{% endblock %}

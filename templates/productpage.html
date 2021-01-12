@@ -1,0 +1,192 @@
+{% extends "productbase.html" %}
+{% block body %}
+<input id='productid' hidden value='{{productid}}'></input>
+
+<br>
+{% include 'product/backtocategories.html' %}
+
+
+
+<div class="card">
+	<div class="row no-gutters">
+		<aside class="col-md-6">
+<img style="max-width:100%;" src="{{url_for('static', filename='productimgs/' + productinfo['photos'][0])}}">
+        </aside>
+
+
+		<aside class="col-sm">
+    <article class="p-5">
+	<h3 class="title mb-3">{{productinfo["name"]}}</h3>
+
+
+
+
+
+
+<!--Konfiguratorius -->
+
+<!--///////Konfiguratorius -->
+<hr>
+
+
+
+
+
+	   <div class="mb-3">
+	<var class="price h3 text-success">
+    <span class="num">€ {{'%0.2f'| format(productinfo["price"]|float/100)}}</span>
+	</var>
+	{% if  productinfo["discount"]!="0"%}
+	<var class="price h3 text-danger">
+    <span class="num"><strike>   {{'%0.2f'| format(productinfo["discount"]|float/100)}} €</strike></span>
+	</var>
+	{% endif %}
+
+</div> <!-- price-detail-wrap .// -->
+
+    {% if productinfo['type']=='personalised' %}
+    <a class="btn btn-outline-success" href="/configure/{{productid}}">Konfigūruoti prekę</a>
+    {% elif productinfo['type']=='basic' %}
+
+
+    <form method='post'>
+          <label for='productsNumber'>Kiekis.:</label>
+            <input type="number" class="form-control" onchange='refreshProductNumber()' id='productsNumber' name='productsNumber' value='1'>
+    </form>
+    <button type="submit" class="btn btn-outline-success" onclick='addtocart()' name="action" id='addtocart' value="buy"> Į krepšelį </button>
+
+    {% endif %}
+
+
+{% include 'product/productinfo.html' %}
+
+</article> <!-- card-body.// -->
+		</aside> <!-- col.// -->
+	</div> <!-- row.// -->
+</div> <!-- card.// -->
+
+
+
+{% include 'product/suggestions.html' %}
+
+
+
+
+<script>
+
+function getcartdata(){
+    var cart=localStorage.getItem("cart")
+    cart=JSON.parse(cart);
+    if(cart==null){cart=[]};
+    return cart;
+    }
+
+var ShoppingDict={
+    'productid':document.getElementById('productid').value,
+    'productlist':[],
+    'imglist':{}
+};
+
+
+
+function updatecart(){
+    var cart=getcartdata();
+    if(document.getElementById('addtocart').value=='buy'){
+            var newnumber=cart.length;
+    };
+    cart[newnumber]=ShoppingDict
+    localStorage.setItem("cart", JSON.stringify(cart))
+    return cart
+    }
+
+
+
+function checkInp(x)///////////////////////FUNKCIJA PATIKRINA AR SKAICIUS AR TEKSTAS
+{
+  if (isNaN(x))
+  {
+    alert("Įveskite prekių skaičių skaitmenimis");
+    return false;
+  }
+};
+
+var ShoppingDict={
+    'productid':document.getElementById('productid').value,
+    'productlist':[],
+    'imglist':{}
+};
+
+
+
+
+
+function refreshProductNumber(){
+    var newnumber=document.getElementById('productsNumber').value;
+    if (checkInp(newnumber)==false||newnumber==1||newnumber<1){
+        if(newnumber<1){
+            newnumber=1
+            document.getElementById('productsNumber').value=1
+        }};
+    if (checkInp(newnumber)==false||newnumber==1||newnumber>200){
+        if(newnumber>200){
+            alert('Maksimalus vieno pirkimo pirkinių skaičius=200, norėdami pirkti daugiau įkelkite šias 200 prekių į krepšelį, ir pakartotinai įkelkite į krepšelį trūkstamą kiekį prekių.')
+            newnumber=200
+            document.getElementById('productsNumber').value=200
+        }};
+
+        ///////////////Idedam tiek tusciu produktu kiek reikia
+        ShoppingDict['productlist']=[]
+        for(a = 0; a < newnumber; a++){
+            ShoppingDict['productlist'].push('product')
+        };
+    console.log(ShoppingDict['productlist'])
+};
+
+
+
+
+
+
+
+
+
+
+
+function addtocart(){
+    document.getElementById('addtocart').disabled=true
+    refreshProductNumber();
+    var d = new Date();
+    d.setTime(d.getTime() + (3600*24*60*60*1000));////KUKIS LAIKOMAS 3600 DIENAS
+    var expires = ";expires="+ d.toUTCString();
+
+    cart=updatecart();
+    productidlist=[];
+    for(p=0; p<cart.length; p++){
+        productidlist[p]=cart[p]['productid'];
+        console.log(productidlist)
+    };
+    productidlist = JSON.stringify(productidlist);
+    document.cookie = "productsidincart="+productidlist+expires+ "; path=/krepselis/";
+    window.location.href = '/krepselis/';
+    /////////////////post('/krepselis/', {'productlist': productidlist});
+};
+
+
+
+
+
+
+</script>
+
+
+
+	<br>
+
+
+
+
+
+
+
+
+{% endblock %}

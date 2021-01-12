@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{pagetitle}}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js"></script>
+<style>
+
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+
+  .carousel-inner img {
+      width: 100%; /* Set width to 100% */
+      margin: auto;
+      min-height:200px;
+  }
+
+  /* Hide the carousel text when the screen is less than 600 pixels wide */
+  @media (max-width: 600px) {
+    .carousel-caption {
+      display: none;
+    }
+  }
+  </style>
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+<a href={{url_for('production')}}>&#8592;Go back to main&#8592;</a><br>
+<a href={{url_for('orderinvoice', orderid=orderid)}}>&#8594;See invoice page&#8594;</a><br>
+
+<p><b>Order id:</b> {{orderinfo[0][0]}}</p>
+<p><b>Order date:</b> {{orderinfo[0][1]}}</p>
+<p><b>Pirkimo suma:</b> ({{orderinfo[0][6]}})</p>
+<p><b>Pirkėjas</b> ({{orderinfo[0][3]}}): {{orderinfo[0][4]}}</p>
+
+{% if orderinfo[0][3]=='juridinis' %}
+
+<p><b>Įmonė:</b> {{orderinfo[0][9]}}</p>
+<p><b>Įmonės kodas:</b> {{orderinfo[0][11]}}</p>
+<p><b>Įmonės pvm kodas:</b> {{orderinfo[0][12]}}</p>
+<p><b>Įmonės oficialus adresas:</b> {{orderinfo[0][10]}}</p>
+{% endif %}
+
+<p><b>email:</b> {{orderinfo[0][7]}}</p>
+<p><b>phone number:</b> {{orderinfo[0][8]}}</p>
+
+<br>
+<br>
+<a class="btn btn-primary" href="/production/order/{{orderinfo[0][0]}}/{%if openmode=='fast'%}slow{%elif openmode=='slow'%}fast{%endif%}" role="button">
+open in {%if openmode=='fast'%}Original SVG mode(slow loading){%elif openmode=='slow'%}Image mode(faster loading){%endif%}</a>
+
+
+
+
+<p>number of products: {{orderinfo[0][24]}}</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">SVG</th>
+              <th scope="col">status</th>
+              <th scope="col">input data</th>
+              <th scope="col">material</th>
+              <th scope="col">Select</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in ordercontent %}
+            <tr>
+              <th scope="row">{{ordercontent[a]['product']}}</th>
+              <td>{{ordercontent[a]["svgname"]}}:<br>
+              {%if openmode=='fast'%}
+              <image  width="200" src="{{url_for('static', filename='productimgs/' + ordercontent[a]["svgfile"])}}">
+              {%else%}
+                {{ordercontent[a]["svgfile"]|safe}}</td>
+                {%endif%}
+              <td>{{ordercontent[a]['status']}}</td>
+              <td>{{ ordercontent[a]['inputdata'] }}</td>
+              <td>{{ordercontent[a]['material']}} {{ordercontent[a]["thickness"]}}</td>
+              <td><input {%if ordercontent[a]["status"]!="SVG only generated"%}disabled{% endif %} onchange='refreshSelectionList("{{ordercontent[a]["svgname"]|string}}")' id="{{ordercontent[a]["svgname"]+'selected'}}" class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" aria-label="..."></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+
+
+
+<form method='post' action="/production/order/{{orderid}}/{{openmode}}">
+<input hidden name='POSTproductlist' id='POSTproductlist' value='none'></input>
+<input hidden name='action' id='SetSvgsAsFinished' value='SetSvgsFinished'></input>
+<button id='GenerateSvgButton' disabled class="btn btn-success btn-lg active" aria-pressed="true">Set selected svg's finished</button>
+<br><p id='selectionlist'></p>
+</form>
+<h1>{{finishedsvgslist}}</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<footer class="container-fluid text-center">
+  <br><br>
+
+
+
+<hr color="red" width="80%"/>
+<h7>&copy All right Reversed. <a href="https://www.ignasmakes.com">ignasmakes</a></h7>
+
+</footer>
+
+<script>
+    var SelectionList = []
+
+    function refreshSelectionList(selectedID){
+        checkboxElementId=selectedID+'selected'
+        if(document.getElementById(checkboxElementId).checked){
+        SelectionList.push(selectedID)}
+        else{
+            var index = SelectionList.indexOf(selectedID);
+            if (index !== -1){SelectionList.splice(index, 1)}}
+
+        if(SelectionList.length>0){document.getElementById('GenerateSvgButton').disabled=false}
+        else{document.getElementById('GenerateSvgButton').disabled=true}
+
+        document.getElementById('selectionlist').innerHTML='Pasirinkta: '+SelectionList
+        document.getElementById('POSTproductlist').value=JSON.stringify(SelectionList)}
+
+</script>
+
+</body>
+</html>

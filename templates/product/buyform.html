@@ -1,0 +1,56 @@
+<!-- <form method="post" action={{url_for('preke', productid=productid)}}>          Kolkas isjungiau forma-->
+    <input type="hidden" name="formmission" value="buy" >
+
+<!--Konfiguratorius -->
+{% include 'product/productconfigurator.html' %}
+<!--///////Konfiguratorius -->
+<hr>
+
+
+
+
+
+	    <div class="mb-3">
+	<var class="price h3 text-success">
+    <span class="num">€ {{'%0.2f'| format(productinfo["price"]|float/100)}}</span>
+	</var>
+	{% if  productinfo["discount"]!="0"%}
+	<var class="price h3 text-danger">
+    <span class="num"><strike>   {{'%0.2f'| format(productinfo["discount"]|float/100)}} €</strike></span>
+	</var>
+	{% endif %}
+
+</div> <!-- price-detail-wrap .// -->
+
+	<button type="submit" class="btn btn-outline-success" onclick='addtocart()' name="action" id='addtocart' value="buy"> Pirkti </button>
+
+
+	<button type="button" onclick='showproductlist()' class="btn btn-primary" data-toggle="modal" data-target="#productlistmodal">
+  Rodyti sukonfiguruotų prekių sarašą
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="productlistmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Prekės parinkčių sąrašas:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id='productlistmodalcontent' class="modal-body">
+
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Uždaryti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- </form> kolkas isjungiau forma -->

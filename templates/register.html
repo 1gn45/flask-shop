@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="container">
+        <div class="col-md-6">
+            <form action="" method="post" id="fileForm" role="form">
+
+            <fieldset><legend class="text-center"><h4>Užsiregistruokite:</h4> <span class="req"></span></legend>
+            <fieldset><legend class="text-center">* Būtina užpildyti</legend>
+
+
+              <div class="form-group">
+                <label for="exampleInputEmail1">* El. pašto adresas:</label>
+                <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="E. pašto adresas" required>
+                <small id="emailHelp" class="form-text text-muted">Jūsų pašto adreso niekam neperleisime.</small>
+              </div>
+
+
+            <div class="form-group">
+                <label for="password"><span class="req">* </span> Slaptažodis: </label>
+                    <input name="pwd" type="password" placeholder="nuo 6 iki 100 simbolių" class="form-control inputpass" minlength="6" maxlength="100"  id="pass1" required value = "{{request.form.password}}"/>
+
+                <label for="password"><span class="req">* </span> Patvirtinkite slaptažodį: </label>
+                    <input name="pwdconfirm" type="password" class="form-control inputpass" minlength="6" maxlength="100"  id="pass2" onkeyup="checkPass(); return false;" required value = "{{request.form.confirm}}"/>
+                        <span id="confirmMessage" class="confirmMessage"></span>
+            </div>
+
+            <div class="form-group">
+
+                <input type="checkbox" required name="terms" onchange="this.setCustomValidity(validity.valueMissing ? 'Norint užbaigti registracija yra privaloma sutikti su parduotuvės taisyklėmis' : '');" id="field_terms" value = "{{request.form.terms}}">   <label for="terms">* Sutinku su parduotuvės <a href="terms.php" title="You may read our terms and conditions by clicking on this link">taisyklėmis</a>.</label>
+            </div>
+
+            <div class="form-group">
+
+                <input type="checkbox" name="notifications" id="notifications" value = "True">   <label for="notifications">Norėčiau gauti el. paštu naujienas ir specialius pasiūlymus.</label>
+            </div>
+
+            <div class="form-group">
+                <input class="btn btn-success" type="submit" name="submit_reg" value="Registruotis">
+            </div>
+
+
+
+            </fieldset>
+            </form>
+
+    <p>{{error}}</p>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,8 @@
+<script>
+function displaycartnumberinnav(){
+    cartcontent=JSON.parse(localStorage.getItem("cart"))
+    num=cartcontent.length;
+    document.getElementById('productsnumincart').innerHTML=num;
+};
+displaycartnumberinnav()
+</script>

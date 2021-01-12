@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block body %}
+<head>
+    <style>
+    .param {
+    margin-bottom: 7px;
+    line-height: 1.4;
+}
+.param-inline dt {
+    display: inline-block;
+}
+.param dt {
+    margin: 0;
+    margin-right: 7px;
+    font-weight: 600;
+}
+.param-inline dd {
+    vertical-align: baseline;
+    display: inline-block;
+}
+
+.param dd {
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.shopping-cart-wrap .price {
+    color: #007bff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 5px;
+    display: block;
+}
+var {
+    font-style: normal;
+}
+
+.media img {
+    margin-right: 1rem;
+}
+.img-sm {
+    width: 90px;
+    max-height: 75px;
+    object-fit: cover;
+}
+    </style>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+
+<hr>
+
+<div class="card">
+<table class="table table-hover shopping-cart-wrap">
+<thead class="text-muted">
+<tr>
+  <th scope="col">Prekė</th>
+  <th scope="col" width="120">Kaina</th>
+</tr>
+</thead>
+<tbody>
+
+
+{% for a in likedlist %}
+<tr>
+	<td>
+<figure class="media">
+	<div class="img-wrap"><a href="{{url_for('preke', productid=a[3])}}"><img src="{{url_for('static', filename='productimgs/' + a[4])}}" class="img-thumbnail img-sm"></a></div>
+	<figcaption class="media-body">
+		<a href="{{url_for('preke', productid=a[3])}}"><h6 class="text-dark">{{a[0]}} </h6></a>
+		<!--<dl class="param param-inline small">
+		  <dt>Size: </dt>
+		  <dd>XXL</dd>
+		</dl>-->
+
+	</figcaption>
+</figure>
+	</td>
+	<td>
+		<div class="price-wrap">
+
+
+			<var class="price h3 text-success">
+            <span class="num">€ {{'%0.2f'| format(a[1]|float/100)}}</span>
+        	</var>
+        	{% if  a[2]!="0"%}
+        	<var class="price h3 text-danger">
+            <span class="num"><strike>€ {{'%0.2f'| format(a[2]|float/100)}}</strike></span>
+        	</var>
+        	{% endif %}
+
+		</div> <!-- price-wrap .// -->
+	</td>
+	<td class="text-right">
+	<form method="post">
+	<button name="remove" value="{{a[3]}}" class="btn btn-outline-danger">Pašalinti</button>
+	</form>
+	</td>
+</tr>
+{% endfor %}
+
+
+
+</tbody>
+</table>
+</div> <!-- card.// -->
+
+</div>
+<!--container end.//-->
+
+
+<br>
+
+
+{% endblock %}
+
+

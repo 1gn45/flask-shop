@@ -1,0 +1,245 @@
+
+
+
+
+
+
+<div class="container-fluid">
+  <div class="row content">
+
+    <div class="col-sm-9">
+    <div class="container">
+<br>  <p class="text-center"><b>Pirkinių sąrašas:</b></p>
+<hr>
+
+<div class="card">
+<table class="table table-hover shopping-cart-wrap">
+<thead class="text-muted">
+<tr>
+  <th scope="col">Prekė</th>
+  <th scope="col" width="120">Kaina</th>
+</tr>
+</thead>
+<tbody>
+
+
+{%for num in range(cartinfo|length)%}
+<tr>
+	<td>
+<figure class="media">
+    <p><b>{{num+1}}. </b></p>
+	<div class="img-wrap"><a href="{{url_for('preke', productid=cartinfo[num][4])}}"><img src="{{url_for('static', filename='productimgs/' + cartinfo[num][1])}}" class="img-thumbnail img-sm"></a></div>
+	<figcaption class="media-body">
+		<a href="{{url_for('preke', productid=cartinfo[num][4])}}"><h6 class="text-dark">{{cartinfo[num][0]}} </h6></a>
+		<dl class="param param-inline small">
+		  <dt>Kiekis: </dt>
+		  <dd id='{{num}}productcount'></dd>
+		</dl>
+		<form method="post" action={{url_for('preke', productid=cartinfo[num][4])}}>
+		<input hidden name='productnumincart' value='{{num}}'>
+		<!--<button name='formmission' value='changeproductincart' class="btn btn-outline-success">Koreguoti</button>//-->
+		</form>
+
+
+
+
+{%if cartinfo[num][5]=='personalised'%}
+<button type="button" onclick='showproductlist({{num}})' class="btn btn-outline-primary" data-toggle="modal" data-target="#productlistmodal">
+  info
+</button>
+{%endif%}
+
+
+
+
+
+
+
+
+
+	</figcaption>
+</figure>
+	<td>
+
+		<div class="price-wrap">
+
+
+			<var class="price h3 text-success">
+            <span class="num" id='{{num}}productprice' value='{{'%0.2f'| format(cartinfo[num][2]|float)}}'>{{'%0.2f'| format(cartinfo[num][2]|float)}}</span>
+        	</var>
+        	{% if  cartinfo[num][3]!="0"%}
+        	<var class="price h3 text-danger">
+            <span class="num"><strike>{{cartinfo[num][3]}}</strike></span>
+        	</var>
+        	{% endif %}
+
+
+			<small class="text-muted">(€)</small>
+		</div> <!-- price-wrap .// -->
+	</td>
+	<td class="text-right">
+	<button id='removebutton{{num}}' name="remove" onclick='handleRemoveFromCart({{num}})' class="btn btn-outline-danger">Pašalinti</button><br>
+	</td>
+</tr>
+{% endfor %}
+
+<!-- Modal -->
+<div class="modal fade" id="productlistmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Prekės parinkčių sąrašas:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id='productlistmodalcontent' class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Uždaryti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</tbody>
+</table>
+</div> <!-- card.// -->
+
+</div>
+<br><br>
+    </div>
+
+
+    <div class="col-sm-3 sidenav">
+<br>
+<br>
+        <div class="card">
+          <div class="card-body">
+              <br>
+              <h3 class="text-center">Viso:
+              <b id='cartprice'></b> (€)</h3>
+              <br>
+              <br>
+            <form method="post" action={{url_for('shipping')}}>
+                <label for='cartdataforcheckout'>(Neįskaičius siuntimo mokesčio)</label>
+            <input type="hidden" id='cartdataforcheckout' name="cartdata" value="">
+            <button {%if cartinfo|length==0%} disabled {% endif %} class="btn btn-outline-primary btn-lg btn-block" id='SubmitCheckout' type="submit" >>Vykdyti užsakymą></button>
+            <p>Prekės atsiuntimas iki: {{planeddelivery}}</p>
+            </form>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+
+
+
+<script>
+
+
+function showproductlist(productnumb)///////////Funkcija kuria naudoja visu pasirinktu produktu mygtukas, kuris grazina moduli su sios funkcijos turiniu
+    {
+    dict=JSON.parse(localStorage.getItem("cart"))
+    ShoppingDict=dict[productnumb]
+    inputlist=Object.keys(ShoppingDict['productlist'][0]);
+    console.log(ShoppingDict['imglist'])
+    showproductsonfiguration=''
+    for(i=0; i<ShoppingDict['productlist'].length; i++){
+        showproductsonfiguration+='<b>'+(i+1)+':</b> '
+
+        for(index=0; index<inputlist.length; index++) {
+        var linevalue=''
+        if(ShoppingDict['productlist'][i][inputlist[index]]==''){linevalue='<font color="red">neįkeltas turinys!</font>'}
+        else{
+            if(ShoppingDict['productlist'][i][inputlist[index]] in ShoppingDict['imglist'])
+                {linevalue='<img src="'+ShoppingDict['imglist'][ShoppingDict['productlist'][i][inputlist[index]]]+'" style="max-width:80px;  max-height:80px;"'+'>'}
+            else{linevalue=ShoppingDict['productlist'][i][inputlist[index]]}
+        }
+        showproductsonfiguration+= inputlist[index] + " : " + linevalue + "<br />";
+        }
+
+    showproductsonfiguration+='<br>'
+    };
+    showproductsonfiguration+='<br><p>-------<p><br>'
+    document.getElementById('productlistmodalcontent').innerHTML=showproductsonfiguration;
+    };
+
+
+
+
+var cartcontent=JSON.parse(localStorage.getItem("cart"))
+console.log(cartcontent)
+function displaycartdata(){
+    listForCheckout=[]
+    cartprice=0
+    for(a=0; a<cartcontent.length; a++){
+        var priceid=JSON.stringify(a)+'productprice';
+        var priceforone=document.getElementById(priceid).innerHTML;
+        var number=cartcontent[a]['productlist'].length
+        var lineproductid=JSON.stringify(cartcontent[a]['productid'])
+        line={id:cartcontent[a]['productid'], number:number}
+        listForCheckout[a]=line
+        fullprice=parseFloat(priceforone)*number/100;
+        fullpricedecimal=fullprice.toFixed(2)
+        cartprice+=fullprice;
+        document.getElementById(priceid).innerHTML=fullpricedecimal;
+        document.getElementById(JSON.stringify(a)+'productcount').innerHTML=number;
+        };
+        document.getElementById('cartdataforcheckout').value=JSON.stringify(listForCheckout);
+        cartprice=cartprice.toFixed(2)
+        document.getElementById('cartprice').innerHTML=cartprice;
+};
+displaycartdata()
+
+
+function handleRemoveFromCart(num){
+    document.getElementById('removebutton'+num).disabled = true;
+    var d = new Date();
+    d.setTime(d.getTime() + (3*360*24*60*60*1000));////KUKIS LAIKOMAS 3metus
+    var expires = ";expires="+ d.toUTCString();
+
+    oldlist=JSON.parse(getCookie('productsidincart'))
+    oldstorage=getcartdata()
+    oldstorage.splice(num, 1);
+    oldstorage=JSON.stringify(oldstorage);
+    oldlist.splice(num, 1);
+    oldlist=JSON.stringify(oldlist)
+    document.cookie = "productsidincart="+oldlist+expires+"; path=/krepselis/";
+    localStorage.setItem("cart", oldstorage)
+    window.location.href = '/krepselis/';
+};
+
+function getCookie(name) {
+    var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+    };
+
+function getcartdata(){
+    var cart=localStorage.getItem("cart")
+    cart=JSON.parse(cart);
+    if(cart==null){cart=[]};
+    return cart;
+    }
+
+
+
+
+function addtocart(){
+    cart=updatecart();
+    productidlist=[];
+    for(p=0; p<cart.length; p++){
+        productidlist[p]=cart[p]['productid'];
+        console.log(productidlist)
+    };
+    productidlist = JSON.stringify(productidlist);
+    document.cookie = "productsidincart="+productidlist+"; path=/krepselis/";
+    window.location.href = '/krepselis/';
+    /////////////////post('/krepselis/', {'productlist': productidlist});
+};
+
+
+
+</script>

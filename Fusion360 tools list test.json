@@ -1,0 +1,114 @@
+{
+    "data": [
+        {
+            "description": "va koks laikiklis",
+            "guid": "72c5c4f0-b479-48b1-b0ef-30cc4c074f7d",
+            "last_modified": 1558726670395,
+            "product-id": "",
+            "product-link": "",
+            "reference_guid": "6a5b2d5b-3476-42d2-a770-ee95d5b47ddb",
+            "segments": [
+                {
+                    "height": 10,
+                    "lower-diameter": 30,
+                    "upper-diameter": 30
+                },
+                {
+                    "height": 20,
+                    "lower-diameter": 20,
+                    "upper-diameter": 20
+                }
+            ],
+            "type": "holder",
+            "unit": "millimeters",
+            "vendor": ""
+        },
+        {
+            "BMC": "hss",
+            "GRADE": "Mill Generic",
+            "description": "va koks",
+            "geometry": {
+                "CSP": false,
+                "DC": 4,
+                "HAND": true,
+                "LB": 9,
+                "LCF": 5,
+                "NOF": 3,
+                "NT": 0,
+                "OAL": 19,
+                "RE": 2,
+                "SFDM": 8,
+                "SIG": 0,
+                "TA": 0,
+                "TP": 0,
+                "shoulder-length": 6,
+                "thread-profile-angle": 0,
+                "tip-diameter": 0,
+                "tip-length": 0,
+                "tip-offset": 0
+            },
+            "guid": "84d6e306-17c8-43ce-877a-34e3c57a6860",
+            "holder": {
+                "description": "va koks laikiklis",
+                "guid": "72c5c4f0-b479-48b1-b0ef-30cc4c074f7d",
+                "last_modified": 1558726670395,
+                "product-id": "",
+                "product-link": "",
+                "reference_guid": "6a5b2d5b-3476-42d2-a770-ee95d5b47ddb",
+                "segments": [
+                    {
+                        "height": 10,
+                        "lower-diameter": 30,
+                        "upper-diameter": 30
+                    },
+                    {
+                        "height": 20,
+                        "lower-diameter": 20,
+                        "upper-diameter": 20
+                    }
+                ],
+                "type": "holder",
+                "unit": "millimeters",
+                "vendor": ""
+            },
+            "last_modified": 1558726764158,
+            "post-process": {
+                "break-control": false,
+                "comment": "",
+                "diameter-offset": 1,
+                "length-offset": 1,
+                "live": true,
+                "manual-tool-change": false,
+                "number": 1,
+                "turret": 0
+            },
+            "product-id": "irankio id",
+            "product-link": "www.babatronai.lt",
+            "start-values": {
+                "presets": [
+                    {
+                        "description": null,
+                        "f_n": 0.06666659999999999,
+                        "f_z": 0.06666666666666667,
+                        "guid": "e7188e19-617d-47d3-9f42-4a4f28adfae0",
+                        "n": 5000,
+                        "n_ramp": 5000,
+                        "name": "Default Preset",
+                        "tool-coolant": "flood",
+                        "v_c": 62.83185307179586,
+                        "v_f": 1000,
+                        "v_f_leadIn": 1000,
+                        "v_f_leadOut": 1000,
+                        "v_f_plunge": 333.33299999999997,
+                        "v_f_ramp": 333.33299999999997,
+                        "v_f_retract": 333.33299999999997
+                    }
+                ]
+            },
+            "type": "ball end mill",
+            "unit": "millimeters",
+            "vendor": "babatron"
+        }
+    ],
+    "version": 1
+}

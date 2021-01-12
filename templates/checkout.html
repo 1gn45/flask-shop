@@ -1,0 +1,527 @@
+{% extends "base.html" %}
+{% block body %}
+<head>
+    <style>
+    .param {
+    margin-bottom: 7px;
+    line-height: 1.4;
+}
+.param-inline dt {
+    display: inline-block;
+}
+.param dt {
+    margin: 0;
+    margin-right: 7px;
+    font-weight: 600;
+}
+.param-inline dd {
+    vertical-align: baseline;
+    display: inline-block;
+}
+
+.param dd {
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.shopping-cart-wrap .price {
+    color: #007bff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 5px;
+    display: block;
+}
+var {
+    font-style: normal;
+}
+
+.media img {
+    margin-right: 1rem;
+}
+.img-sm {
+    width: 90px;
+    max-height: 75px;
+    object-fit: cover;
+}
+    </style>
+</head>
+
+
+
+
+
+
+
+
+<div class="container-fluid">
+  <div class="row content">
+
+    <div class="col-sm-9">
+    <div class="container">
+
+<hr>
+
+
+
+<form id='checkoutform' method="post" action={{url_for('checkoutsubmit')}}>
+    <p>
+      <button class="btn btn-light" type='button' onclick='setFizinis()'>
+        Fizinis pirkėjas
+      </button>
+
+    <button class="btn btn-light" type='button' onclick='setJuridinis()'>
+        Juridinis pirkėjas
+      </button>
+    </p>
+
+<input hidden name='storagedict' id='storagedict'></input>
+<input hidden name='buyerType' id='buyerType' value='fizinis'></input>
+
+<!--  FIZINIS PIRKEJAS  -->
+    <div class="collapse" id="fiziniscollapse">
+      <div class="card card-body">
+
+
+<br>  <p class="text-center"><b>Pirkėjo kontaktinė informacija:</b></p>
+<p class="text-danger">* Pažymėti laukai yra būtini.</p>
+
+
+    <div class="form-group col-md-6">
+      <label for="inputname">Vardas, Pavardė: <i class="text-danger">*</i></label>
+      <input type="text" class="form-control" name='inputname' id="inputname" placeholder="Vardenis Pavardenis">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputEmail">El. paštas: <i class="text-danger">*</i></label>
+      <input type="email" class="form-control" id="inputEmail" name='inputEmail' placeholder="vardenis@gmail.com">
+    </div>
+
+    <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputNumber">Kontaktinis mob. tel.: <i class="text-danger">*</i></label>
+      <input type="number" class="form-control" id="inputNumber" name='inputNumber' placeholder='+370xxxxxxxx'>
+    </div>
+  </div>
+
+
+
+<div class="form-group">
+    <label for="DeliveryType">Pristatymo būdas:</label>
+    <select class="form-control" id="DeliveryType" name='DeliveryType' onchange='changeDeliveryType()'>
+      <option value='Omniva'>Atsiėmimas Omniva paštomate</option>
+      <option value='LPregistered'>Registruotas siuntinys Lietuvos paštu</option>
+    </select>
+  </div>
+
+    <div id='omnivafields' class="form-group">
+        <label for="omnivaaddress">Pasirinkite paštomatą: <i class="text-danger">*</i></label>
+        <select class="form-control" id="omnivaaddress" name="omnivaaddress">
+        {% for a in omnivalist %}
+          <option>{{a}}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+
+<div id='addressfields'>
+  <div class="form-group">
+    <label for="inputAddress">Namų adresas: <i class="text-danger">*</i></label>
+    <input type="text" class="form-control" id="inputAddress" name="inputAddress" placeholder="Gatvė - Namo Nr - Buto Nr">
+
+
+      <label for="inputCity">Miestas ar Gyvenvietė: <i class="text-danger">*</i></label>
+      <input type="text" class="form-control" placeholder='Vilnius' id="inputCity" name="inputCity">
+      <label for="inputZip">Pašto kodas:    <i class="text-danger">*</i> <a target="_blank" href='https://www.post.lt/pasto-kodu-ir-adresu-paieska'><i class="fas fa-search"></i></a></label>
+      <input type="text" class="form-control" id="inputZip" name="inputZip" placeholder='LT-12345'>
+</div>
+</div>
+
+
+      </div>
+    </div> <!-- Baigiasi collapse -->
+
+
+
+
+
+
+
+
+
+
+
+    <!--  JURIDINIS PIRKEJAS  -->
+    <div class="collapse" id="juridiniscollapse">
+      <div class="card card-body">
+
+
+        <br>  <p class="text-center"><b>Juridinis asmuo</b></p>
+        <p class="text-danger">* Pažymėti laukai yra būtini.</p>
+
+
+        <div class="form-group col-md-6">
+      <label for="inputcontactnameJur">Vardas, Pavardė (kontaktinis asmuo): <i class="text-danger">*</i></label>
+      <input type="text" class="form-control" id="inputcontactnameJur" name="inputcontactnameJur" placeholder="pvz.: Vardenis Pavardenis">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputEmailJur">El. paštas (sąsk. f. siuntimui): <i class="text-danger">*</i></label>
+      <input type="email" class="form-control" id="inputEmailJur" name="inputEmailJur" placeholder="pvz.: vardenis@gmail.com">
+    </div>
+
+    <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputNumberJur">Kontaktinis mob. tel.: <i class="text-danger">*</i></label>
+      <input type="number" class="form-control" id="inputNumberJur" name="inputNumberJur" placeholder='pvz.: +370xxxxxxxx'>
+    </div>
+  </div>
+
+    <div class="form-group col-md-6">
+      <label for="organizationname">Įmonės pavadinimas: <i class="text-danger">*</i></label>
+      <input type="text" class="form-control" id="organizationname" name="organizationname" placeholder='pvz.: UAB "Įmonė"'>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for="registrationaddress">Įmonės registracijos adresas(nurodomas sąskaitoje faktūroje): <i class="text-danger">*</i></label>
+      <input type="text" class="form-control" id="registrationaddress" name="registrationaddress" placeholder="pvz.: A. Vienuolio-1, Vilnius, Lietuva">
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for="organizationid">Įmonės kodas: <i class="text-danger">*</i></label>
+      <input type="number" class="form-control" id="organizationid" name="organizationid" placeholder="pvz.: 123456789">
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for="pwmid">PVM mokėtojo kodas (jei esate pvm mokėtojas):</label>
+      <input type="text" class="form-control" id="pwmid" name="pwmid" placeholder="pvz.: LT123456789">
+    </div>
+
+
+
+<div class="form-group">
+    <label for="DeliveryTypeJur">Pristatymo būdas:</label>
+    <select class="form-control" id="DeliveryTypeJur" name="DeliveryTypeJur" onchange='changeDeliveryTypeJur()'>
+      <option value='Omniva'>Atsiėmimas Omniva paštomate</option>
+      <option value='LPregistered'>Registruotas siuntinys Lietuvos paštu</option>
+    </select>
+  </div>
+
+    <div id='omnivafieldsJur' class="form-group">
+        <label for="omnivaaddressJur">Pasirinkite paštomatą: <i class="text-danger">*</i></label>
+        <select class="form-control" id="omnivaaddressJur" name="omnivaaddressJur">
+        {% for a in omnivalist %}
+          <option>{{a}}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+
+<div id='addressfieldsJur'>
+  <div class="form-group">
+    <label for="inputAddressJur">Siuntos gavėjo adresas: <i class="text-danger">*</i></label>
+    <input type="text" class="form-control" id="inputAddressJur" name="inputAddressJur" placeholder="Gatvė Namo Nr-Buto Nr">
+
+      <label for="inputCityJur">Miestas ar gyvenvietė: <i class="text-danger">*</i></label>
+      <input type="text" class="form-control" placeholder='pvz.: Molėtai' id="inputCityJur" name="inputCityJur">
+
+      <label for="inputZipJur">Pašto kodas:    <i class="text-danger">*</i> <a target="_blank" href='https://www.post.lt/pasto-kodu-ir-adresu-paieska'><i class="fas fa-search"></i></a></label>
+      <input type="text" class="form-control" id="inputZipJur" name="inputZipJur" placeholder='pvz.: LT-12345'>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+    </div> <!-- Baigiasi collapse -->
+
+
+
+
+
+</form>
+
+
+
+
+
+
+</div>
+<br><br>
+    </div>
+
+    <div class="col-sm-3 sidenav">
+<br>
+<br>
+        <div class="card">
+          <div class="card-body">
+              <br>
+              <h3 class="text-center">Iš viso mokėti:
+              <b id='cartprice'></b>€ {{'%0.2f'| format(price|float/100)}}</h3>
+              <br>
+              <p id='termscondicionstext' class='text-body' style='font-size:13px'>Kad galėtume įvykdyti užsakymą, turite sutikti su varle.lt taisyklėmis ir privatumo politika.</p>
+                <div class="col-auto my-1">
+
+            <div class="custom-control custom-checkbox mr-sm-2">
+                <input type="checkbox" class="custom-control-input" id="agree">
+                <label class="custom-control-label" for="agree">Patvirtinu, kad susipažinau ir sutinku su Varle.lt taisyklėmis ir privatumo politika.</label>
+              </div>
+            </div>
+            <p class="text-danger" id='warningMessage'></p>
+            <button type="button" onclick='buyIt()' class="btn btn-outline-primary btn-lg btn-block" data-dismiss="modal">Apmokėti</button>
+            <button type="button" onclick='GoToCheckout()' class="btn btn-outline-primary btn-lg btn-block" data-dismiss="modal">Apmokėjimas</button>
+
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+
+
+
+<script>
+
+function post(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+
+
+
+
+
+
+
+function setFizinis(){
+    buyerType='private'
+    document.getElementById('juridiniscollapse').classList.remove("show");
+    document.getElementById('fiziniscollapse').classList.add("show");
+    document.getElementById('warningMessage').innerHTML=''
+    document.getElementById('buyerType').value='fizinis'
+};
+function setJuridinis(){
+    buyerType='commercial'
+    document.getElementById('fiziniscollapse').classList.remove("show");
+    document.getElementById('juridiniscollapse').classList.add("show");
+    document.getElementById('warningMessage').innerHTML=''
+        document.getElementById('buyerType').value='juridinis'
+};
+
+
+
+function validateZipCode(stri)
+{
+    if(stri.substr(0, 2)=='LT'||stri.substr(0, 2)=='lt'){
+        if(stri[2]=='-'){
+            if(stri.length==8){return true}
+            else{return false}
+        }
+        else{return false}
+    }
+    else{return false}
+};
+
+
+function validateNameNumber(name) {
+    var NAME = name;
+    var values = name.split(' ').filter(function(v){return v!==''});
+    if (values.length > 1) {
+        //two or more words
+        return true;
+    } else {
+        //not enough words
+        return false;
+    }
+};
+
+
+function phoneIsValid(inputtxt) {
+    if(inputtxt.substr(0,2)=='86'){if(inputtxt.length!=9){return false}}
+    else if(inputtxt.substr(0,3)=='370'){if(inputtxt.length!=11){return false}}
+    else{return false}
+    return true};
+
+
+function emailIsValid (email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function changeDeliveryType(){
+    if(document.getElementById('DeliveryType').value=='Omniva'){
+        document.getElementById('addressfields').style.visibility = 'hidden';
+        document.getElementById('omnivafields').style.visibility = 'visible';
+    }
+    else{document.getElementById('addressfields').style.visibility = 'visible';
+        document.getElementById('omnivafields').style.visibility = 'hidden';}
+}
+
+function changeDeliveryTypeJur(){
+    if(document.getElementById('DeliveryTypeJur').value=='Omniva'){
+        document.getElementById('addressfieldsJur').style.visibility = 'hidden';
+        document.getElementById('omnivafieldsJur').style.visibility = 'visible';
+    }
+    else{document.getElementById('addressfieldsJur').style.visibility = 'visible';
+        document.getElementById('omnivafieldsJur').style.visibility = 'hidden';}
+}
+
+
+
+changeDeliveryType()
+changeDeliveryTypeJur()
+setFizinis()
+
+function CheckValidation(){
+    var validation=true
+    var message=''
+
+
+    if(buyerType=='private'){
+            if(validateNameNumber(document.getElementById('inputname').value)==false){
+               message+='<br>* Neįvestas vardas ir pavardė'
+                validation=false
+            }
+
+            if(phoneIsValid(document.getElementById('inputNumber').value)==false){
+               message+='<br>* Klaidingai įvestas tel numeris'
+            validation=false
+            }
+
+            if(emailIsValid(document.getElementById('inputEmail').value)==false){
+               message+='<br>* Neįvestas arba klaidingai įvestas el. paštas'
+                validation=false
+            }
+
+            if(document.getElementById('DeliveryType').value=='LPregistered'){
+                if(validateNameNumber(document.getElementById('inputAddress').value)==false){
+               message+='<br>* Neįvestas arba blogai įvestas adresas'
+                validation=false}
+
+                if(document.getElementById('inputCity').value.length<3){
+               message+='<br>* Neįvestas arba blogai įvestas Miestas'
+                validation=false}
+
+            if(validateZipCode(document.getElementById('inputZip').value)==false){
+                 message+='<br>* Neįvestas arba blogai įvestas pašto kodas'
+                validation=false
+            };
+        }}
+
+    else if(buyerType=='commercial'){
+            if(validateNameNumber(document.getElementById('inputcontactnameJur').value)==false){
+               message+='<br>* Neįvestas kontaktinio asmens vardas ir pavardė'
+                validation=false
+            }
+
+            if(emailIsValid(document.getElementById('inputEmailJur').value)==false){
+               message+='<br>* Neįvestas arba klaidingai įvestas el. paštas'
+                validation=false
+            }
+
+            if(phoneIsValid(document.getElementById('inputNumberJur').value)==false){
+               message+='<br>* Neįvestas arba klaidingai įvestas kontaktinis tel numeris'
+            validation=false
+            }
+
+            if(validateNameNumber(document.getElementById('organizationname').value)==false){
+               message+='<br>* Neįvestas įmonės pavadinimas'
+                validation=false
+            }
+
+            if(validateNameNumber(document.getElementById('registrationaddress').value)==false){
+               message+='<br>* Neįvestas arba blogai įvestas įmonės registruotas adresas'
+                validation=false}
+
+            pwmid=document.getElementById('pwmid').value
+            if(pwmid.length>0){
+            if(pwmid.substr(0, 2)=='LT'||pwmid.substr(0, 2)=='lt'&&pwmid.length==11){console.log('gut')
+            }
+            else{message+='<br>* Klaidingai įvestas pvm kodas'
+                validation=false};
+            }
+
+            if(document.getElementById('organizationid').value.length!=9){message+='<br>* Neįvestas arba klaidingai įvestas įmonės kodas'
+                validation=false}
+
+            if(document.getElementById('DeliveryTypeJur').value=='LPregistered'){
+                if(validateNameNumber(document.getElementById('inputAddressJur').value)==false){
+               message+='<br>* Neįvestas arba blogai įvestas adresas'
+                validation=false}
+
+                if(document.getElementById('inputCityJur').value.length<3){
+               message+='<br>* Neįvestas arba blogai įvestas Miestas'
+                validation=false}
+
+            if(validateZipCode(document.getElementById('inputZipJur').value)==false){
+                 message+='<br>* Neįvestas arba blogai įvestas pašto kodas'
+                validation=false
+            };
+        }
+
+
+    }
+
+    document.getElementById('warningMessage').innerHTML=message
+    return validation
+    ///if(validation==false){
+    ///    document.getElementById('warningMessage')=message
+    ///}
+    };
+
+
+function buyIt(){
+        if(CheckValidation()==true){
+            storagedict=localStorage.getItem("cart")
+            document.getElementById('storagedict').value=storagedict
+           document.getElementById('checkoutform').submit()
+        }
+    };
+
+
+function GoToCheckout(){
+        if(CheckValidation()==true){
+            storagedict=localStorage.getItem("cart")
+            document.getElementById('storagedict').value=storagedict
+           document.getElementById('checkoutform').submit()
+        }
+    };
+
+
+
+console.log(localStorage.getIotem("cart"))
+</script>
+
+
+
+
+<br>
+
+{% endblock %}

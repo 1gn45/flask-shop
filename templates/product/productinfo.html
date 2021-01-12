@@ -1,0 +1,16 @@
+<dl>
+  <dt>Aprašymas</dt>
+  <dd><p>{{productinfo["description"]}}</p></dd>
+</dl>
+<dl class="row">
+  <dt class="col-sm-3">Medžiaga:</dt>
+  <dd class="col-sm-9">{{productinfo["material"]}}</dd>
+
+  <dt class="col-sm-3">Matmenys:</dt>
+  <dd class="col-sm-9">aukštis({{productinfo["height"]}}mm), plotis({{productinfo["width"]}}mm), storis({{productinfo["thickness"]}}mm)</dd>
+
+</dl>
+<hr>
+
+
+	{% if productinfo['type']=='personalised' %}{% if productinfo["prinputinfo"]!="" %}<span class="num">(Individualizuotus prekės duomenis įvesite sekančiame žingsnyje)</span>{% endif %}{% endif %}

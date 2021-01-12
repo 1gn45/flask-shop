@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5BMHHXNTMV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5BMHHXNTMV');
+    </script>
+
+  <title>{{pagetitle}}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js"></script>
+<style>
+
+.card-img-top {
+    width: 80%;
+    height: 40vh;
+    object-fit: cover;
+}
+
+ /* Bootstrap Lightbox using Modal */
+
+#profile-grid { overflow: auto; white-space: normal; }
+#profile-grid .profile { padding-bottom: 40px; }
+#profile-grid .panel { padding: 0 }
+#profile-grid .panel-body { padding: 15px }
+#profile-grid .profile-name { font-weight: bold; }
+#profile-grid .thumbnail {margin-bottom:6px;}
+#profile-grid .panel-thumbnail { overflow: hidden; }
+#profile-grid .img-rounded { border-radius: 4px 4px 0 0;}
+
+/* PREKES KARUSELES CSS NUSTATYMAI */
+        body {
+    	margin: 0;
+    	padding: 0;
+    }
+    .imgBox {
+    	width: 720px;
+    	margin: 50px auto 20px;
+    }
+    .imgBox img {
+    	width: 100%;
+    	border: 4px solid #fff;
+    	box-shadow: 0 5px 25px rgba(0,0,0,.5);
+    }
+    ul.thumb {
+    	margin: 0 auto;
+    	padding:0;
+    	display: flex;
+    	align-item:center;
+    	justify-content:center;
+    }
+    ul.thumb li {
+    	list-style: none;
+    	margin: 0 10px;
+    	width:125px;
+    	height:100px;
+    }
+    ul.thumb li img {
+    	border: 4px solid #fff;
+    	box-shadow: 0 5px 25px rgba(0,0,0,.5);
+    	width:100%;
+    	height:100%;
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+
+  .carousel-inner img {
+      width: 100%; /* Set width to 100% */
+      margin: auto;
+      min-height:200px;
+  }
+
+  /* Hide the carousel text when the screen is less than 600 pixels wide */
+  @media (max-width: 600px) {
+    .carousel-caption {
+      display: none;
+    }
+  }
+  </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+       <a class="navbar-brand" href="/"><img align="right" style="max-width:170px; margin-top:-1px;"
+            src="{{url_for ('static', filename='logo.png') }}"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link active" href="/katalogas/"><i class="fas fa-book"></i> Katalogas</a>
+          </li>
+            <li class="nav-item active">
+            <a class="nav-link active" href="/paieska/"><i class="fas fa-search"></i> Prekės paieška</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link active" href="/apie/"><i class="fas fa-users"></i> Apie mus</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link active" href="/kontaktai/"><i class="fas fa-info-circle"></i> Kontaktai</a>
+          </li>
+        <!--{% if session.logged_in %}
+          <li class="nav-item active">
+            <a class="nav-link active" href="/logout/"><i class="fas fa-sign-out-alt"></i> Atsijungti</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link active" href="/paskyra/"><i class="far fa-address-book"></i> Mano paskyra</a>
+          </li>
+        {% else %}
+            <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-sign-in-alt"></i> Prisijungti</a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="/prisijungti/">Prisijungti</a>
+                  <a class="dropdown-item" href="/registruotis/">Registruotis</a>
+                </div>
+            </li>
+        {% endif %}-->
+            <li class="nav-item">
+            <a class="nav-link active" href="/isimintos-prekes/"><i class="fas fa-heart"></i> Įsimintos prekės({{session.liked|length}}) </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/krepselis/"><i class="fas fa-shopping-cart"></i> Krepšelis (<i id='productsnumincart'>0</i>)</a>
+          </li>
+        </ul>
+      </div>
+</nav><br><br><br>
+
+
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+        <div class = "alert alert-warning alert-dismissable" role = "alert">
+            <button type = "button" class = "close" data-dismiss = "alert" aria-label="Close"><span aria-hidden = "true">&times;</span></button>
+            {{ message }}
+        </div>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+{% block body %}
+{% endblock %}
+
+<footer class="container-fluid text-center">
+    <hr color="red" size="100"  width="80%"/>
+<!--
+  <form method="post"><h5>Get deals:</h5>
+    <input align="center" type="email" class="input-large search-query" placeholder="Email Address">
+    <button align="center" type="button" class="btn btn-danger">Sign Up</button>
+  </form>
+  <br><br>
+  -->
+
+		<div class="container">
+			<div class="row text-center text-xs-center text-sm-left text-md-left">
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<h5>Tinklapio navigacija</h5>
+					<ul class="list-unstyled quick-links">
+						<li><a class="text-success" href="">Pagrindinis</a></li>
+						<li><a class="text-success" href="/katalogas">Katalogas</a></li>
+						<li><a class="text-success" href="/paieska">Paieška</a></li>
+						<li><a class="text-success" href="/apie">Apie mus</a></li>
+						<li><a class="text-success" href="/kontaktai">Kontaktai</a></li>
+						<li><a class="text-success" href="/krepselis">Krepšelis</a></li>
+						<li><a class="text-success" href="/taisykles">Taisyklės</a></li>
+					</ul>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<h5>Susisiekite su mumis</h5>
+					<ul class="list-unstyled quick-links">
+						<li><a class="text-success" target="_blank" href="/kontaktai">Kontaktai</a></li>
+						{% for a in webdata['contacts'] %}
+						<li><a class="text-success" target="_blank" href="{{webdata['contacts'][a]}}">{{a}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			</div>
+
+<hr color="red" width="80%"/>
+<h7>© {{webdata['shopname']}} - Visos tinklapio autorinės teisės saugomos.<!-- <a class="text-success" target="_blank" href="https://{{webdata['copyright'][1]}}">{{webdata['copyright'][0]}}</a>--></h7>
+
+</footer>
+{% include 'JSdisplaycartnumberinnav.html' %}
+</body>
+</html>

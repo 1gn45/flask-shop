@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{pagetitle}}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+
+<style>
+#accordionExample {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    border: 0;
+    max-height:100%;
+}
+
+.bottomright {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  font-size: 18px;
+}
+
+
+.topleft {
+  position: absolute;
+  top: 80px;
+  left: 16px;
+}
+
+
+
+.card-img-top {
+    width: 80%;
+    height: 40vh;
+    object-fit: cover;
+}
+
+#my_iframe {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.js"></script>
+
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+        <div class = "alert alert-warning alert-dismissable" role = "alert">
+            <button type = "button" class = "close" data-dismiss = "alert" aria-label="Close"><span aria-hidden = "true">&times;</span></button>
+            {{ message }}
+        </div>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+
+<input id='productid' hidden value='{{productid}}'></input>
+{% include 'product/backtocategories.html' %}
+
+
+{% if productinfo['configuratortype']=='3d' %}
+<iframe id='my_iframe' top='0px' left='0px' border='0' position='absolute' frameborder="0" width='100%' height='100%' allowfullscreen src="{{url_for('static', filename='3dscenes/' + productid+'/' + productid + '.html')}}"></iframe>
+<!--<a class="nav-link" href="{{url_for('preke', productid=productid) }}">Gryžti į prekės puslapį <span class="sr-only">(current)</span></a>-->
+{% elif productinfo['configuratortype']=='2d' %}
+<div top='0px' left='0px' height="10" width="10">
+  {% include 'svgs/'+productid+'Visual.svg' %}
+</div>
+{% endif %}
+
+
+<div class='topleft'><h1 class="navbar-brand text-success" href="#"><b id='currentproductselected'>1</b><b>/</b><b id='howmuchproducts'></b></h1></div>
+
+
+
+
+  <h1 class="bottomright">
+
+<div class="text-right mb-1">
+	<button type="submit" class="btn btn-outline-success" onclick='addtocart()' name="action" id='addtocart' value="buy"> Į krepšelį </button>
+</div>
+<div class="text-right mb-1">
+	<button type="button" onclick='showproductlist()' class="btn btn-outline-primary" data-toggle="modal" data-target="#productlistmodal">
+  Rodyti sukonfiguruotų prekių sarašą
+</button>
+
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="productlistmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Prekės parinkčių sąrašas:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id='productlistmodalcontent' class="modal-body">
+
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Uždaryti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  </h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="accordion" id="accordionExample" top='0px' left='0px'>
+  <div class="card" style="width: 20rem;">
+    <div class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <b>Rodyti/slėpti konfigūratorių</b>
+        </button>
+      </h2>
+    </div>
+
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body" style="height: 15%">
+       <!--INPUTU PRADZIA -->
+
+
+<label for="productsNumber"><b>Prekių kiekis:</b></label>
+<input onchange="refreshProductNumber()" id="productsNumber" type="quantity" class="form-control col-xs-2" name="quantity" value="0">
+
+<label for='selectproduct'><b id='numselectorlabel'>Konfigūruojamas produktas:</b></label>
+<select class="custom-select col-sm-3" onchange="selectProductNum()" id="selectproduct">
+          {% for n in range(200) %}
+<option id='btn{{n}}' type="button" class="btn btn-link btn-sm">{{n+1}}</button>
+{% endfor %}
+    </select><hr>
+
+
+    <b hidden id='numofproduct'>1</b><b></b>
+ {% for a in inputinfo %}
+{% if a[2]=='text' %}
+<label for='textfor{{a[4]}}'>{{a[1]}}:</label>
+<input id='textfor{{a[4]}}' name='{{a[4]}}' oninput="refreshFunction('textfor{{a[4]}}','{{a[4]}}', '{{a[1]}}')"></input>
+<br>
+{% elif a[2]=='img'  %}
+<label for='imgfor{{a[4]}}'>{{a[1]}}:</label>
+<input id='imgfor{{a[4]}}' name='{{a[4]}}' type="file" onchange="setImage('imgfor{{a[4]}}', '{{a[4]}}', '{{a[1]}}', 'imgtoshow{{a[4]}}')">
+<img id='imgtoshow{{a[4]}}' style="max-width:100px;  max-height:100px;" src=''>
+{% elif a[2]=='font-size'  %}
+
+        <label for="customRange3">{{a[1]}}</label>
+        <input id='fontsizefor{{a[4]}}' name='{{a[4]}}' type="range" class="custom-range" value="{{a[5]}}" min="{{a[6]}}" max="{{a[7]}}" step="0.1" id="customRange3" onchange="setFontSize('fontsizefor{{a[4]}}', '{{a[4]}}', '{{a[1]}}')">
+
+
+{% endif %}
+{% endfor %}
+
+
+
+
+<div hidden>
+{% include 'svgs/'+productid+'.svg' %}
+</div>
+
+
+
+<!--komandos i verge3d siunciamos siais elementais -->
+    <button hidden type='button' id="changetextureURLfrominputvalue" >Click to change texture URL from input value</button><!-- aktyvuoja verge3d texture change komanda, kuri naudoja inputo zemiau turini -->
+    <button hidden type='button' id="changetexturefromappdir">Click to change texture from app dir</button>
+	<input hidden id='input'></input><!-- inputo turinys: svg paveikslelis su atnaujintu turiniu -->
+
+
+
+<!--///////Konfiguratorius -->
+
+
+
+
+       <!--INPUTU PABAIGA -->
+
+
+      </div>
+    </div>
+
+
+
+  </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <form method="post" action={{url_for('preke', productid=productid)}}>          Kolkas isjungiau forma-->
+    <input type="hidden" name="formmission" value="buy" >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<br>
+
+{% include 'product/javascript.js' %}
+
+
+
+
+
+
+
+</body>
+</html>

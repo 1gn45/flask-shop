@@ -1,0 +1,5 @@
+SVG failuose turi buti pakeista # i %23
+
+img turi tureti atributa:
+preserveAspectRatio="xMidYMid slice" (jei norima kad pertekline paveiksliuko asis islystu lauk islaikant xy ratio)
+preserveAspectRatio="xMidYMid meet" (jei norima kad paveiksliukas butu sutalpintas i remus islaikant xy ratio)

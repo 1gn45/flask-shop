@@ -1,0 +1,18 @@
+<body>
+    <hr>
+<h2>{{h3}}</h2>
+<p style="color:black;font-size:18px;">
+    Jūsų užsakymas priimtas! Dėkojame, kad naudojatės {{shopname}} paslaugomis!<br>
+    Apmokėjus šią dieną užsakymas atkeliaus iki {{deliverydate}}.<br>
+    Prašome apmokėti žemiau nurodytais rekvizitais:<br>
+    <br>
+    Gavėjo sąskaita: {{seller['bankacc']}}<br>
+    Gavėjo pavadinimas: {{seller['name']}}<br>
+    Gavėjo kodas: {{seller['sellercode']}}<br>
+    Suma: {{'%0.2f'| format(fullprice|float/100)}} eu<br>
+    Mokėjimo paskirtis: Užsakymas {{ordernumber}}<br>
+
+    </p>
+
+
+</body>
