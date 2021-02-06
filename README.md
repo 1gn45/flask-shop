@@ -2,7 +2,7 @@
 Been making this eshop for my needs, but it expanded a lot more than I expected at first<br>
 # Currently this e shop has stable functions:<br>
 -----USER SIDE-----<br>
-*Product suggestions on main page ordered by selected product features and categories<br>
+*Product suggestions on main page shown by selected product features and categories<br>
 *Product search<br>
 *3D product customizator<br>
 *2D product customizator<br>
