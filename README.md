@@ -23,7 +23,7 @@ Frontend: Bootstrap, Verge3d(for 3d scenes), Fontawesome, LightBox<br>
 Backend python libraries: gspread, json, oauth2client, pydrive.drive, pydrive.auth, BeautifulSoup, cssutils, csv, flask, flask_weasyprint, werkzeug.utils, flask_basicauth<br>
 <br>
 
-# Upploading customizable product(LTU):
+# Methods of uploading products to store(LTU lang):
 ```
 ----------------------1. SVG Pritaikymas e shopui (Inkscape)-------------------------<br>
 main.svg<br>
@@ -70,7 +70,7 @@ svg for customizator.svg<br>
 9. <svg> tage idedu id='svg2'<br>
 <br>
 <br>
-Blender:<br>
+----------------------2. Setting up 3D scene in Blender3D:<br>-------------------------<br>
 1. import svg<br>
 2. pazymeti svg>   object>convert to>mesh from curve<br>
 3. Pazymeti visus face>extrude pagal medziagos stori<br>
